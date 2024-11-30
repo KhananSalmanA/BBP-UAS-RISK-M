@@ -2,6 +2,8 @@
 session_start();
 include('assets/config.php');
 
+$error_message = ""; // Variabel untuk menyimpan pesan error
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -17,10 +19,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: dashboard.php");  // Arahkan ke dashboard
             exit();
         } else {
-            echo "Password salah.";
+            $error_message = "Password salah, coba lagi."; // Menyimpan pesan error
         }
     } else {
-        echo "Username tidak ditemukan.";
+        $error_message = "Username tidak ditemukan."; // Menyimpan pesan error
     }
 }
 ?>
@@ -40,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin: 0;
             padding: 0;
             height: 100vh;
-            background: url('wallpaperlogin.jpg') no-repeat center center fixed;
+            background: url('wallpaperlogin2.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Poppins', sans-serif;
         }
@@ -88,6 +90,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 1.2rem;
             line-height: 1.6;
         }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin: 10px auto;
+        }
     </style>
 </head>
 <body>
@@ -106,6 +113,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                         </div>
+                        <?php if ($error_message): ?>
+                            <div class="error-message">
+                                <?php echo $error_message; ?>
+                            </div>
+                        <?php endif; ?>
                         <button type="submit" class="btn btn-primary">Login</button>
                     </form>
                     <p class="mt-3">Don't have an account? <a href="signup.php">Sign Up</a></p>
