@@ -1,6 +1,9 @@
 <?php
 include('assets/config.php');
 
+// Variabel untuk menyimpan pesan status
+$status_message = '';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ambil data dari form
     $username = $_POST['username'];
@@ -12,14 +15,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $check_result = mysqli_query($conn, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
-        echo "Username atau Email sudah digunakan.";
+        $status_message = "Username atau Email sudah digunakan.";
     } else {
         // Masukkan data pengguna baru ke database
         $insert_query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
         if (mysqli_query($conn, $insert_query)) {
-            echo "Pendaftaran berhasil! <a href='index.php'>Login Sekarang</a>";
+            $status_message = "Pendaftaran berhasil! <a href='index.php'>Login Sekarang</a>";
         } else {
-            echo "Terjadi kesalahan saat mendaftar.";
+            $status_message = "Terjadi kesalahan saat mendaftar: " . mysqli_error($conn);
         }
     }
 }
@@ -40,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin: 0;
             padding: 0;
             height: 100vh;
-            background: url('wallpaperlogin.jpg') no-repeat center center fixed;
+            background: url('wallpaperlogin2.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Poppins', sans-serif;
         }
@@ -88,10 +91,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 1.2rem;
             line-height: 1.6;
         }
+        .error-message {
+            color: black;
+            font-size: 0.875rem;
+            margin: 10px auto;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+<div class="container">
         <div class="row w-100">
             <!-- Sign Up Section -->
             <div class="col-md-6 d-flex align-items-center justify-content-center">
@@ -110,6 +118,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                         </div>
+
+                        <!-- Menampilkan pesan status -->
+                        <?php if ($status_message): ?>
+                            <div class="error-message">
+                                <?php echo $status_message; ?>
+                            </div>
+                        <?php endif; ?>
+
                         <button type="submit" class="btn btn-primary">Sign Up</button>
                     </form>
                     <p class="mt-3">Already have an account? <a href="index.php">Login</a></p>
